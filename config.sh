@@ -62,7 +62,7 @@ case "$THE_ARCH" in
 	AOSP_ARCH="arch-arm64"
 	HOST="aarch64-linux"
 	AOSP_FLAGS="-funwind-tables -fexceptions -frtti"
-	FF_EXTRA_CFLAGS=""
+	FF_EXTRA_CFLAGS="-Os -fPIC -march=armv8-a"
 	FF_CFLAGS="-O3 -Wall -pipe -ffast-math -fstrict-aliasing -Werror=strict-aliasing -Wno-psabi -Wa,--noexecstack -DANDROID  "
 	;;
   mips|mipsel)

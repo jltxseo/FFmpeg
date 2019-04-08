@@ -10,10 +10,15 @@ TOOLCHAIN=$ANDROID_NDK_ROOT/toolchains/$TOOLCHAIN_BASE-$AOSP_TOOLCHAIN_SUFFIX/pr
 ISYSROOT=$ANDROID_NDK_ROOT/sysroot
 ASM=$ISYSROOT/usr/include/$TOOLCHAIN_BASE
 
-PREFIX=$LIBS_DIR/$AOSP_ABI
 PREFIX=$(pwd)/android/$AOSP_ABI
 
 echo "start build ffmpeg"
+echo "PLATFORM="$PLATFORM
+echo "TOOLCHAIN="$TOOLCHAIN
+echo "ISYSROOT="$ISYSROOT
+echo "ASM="$ASM
+echo "PREFIX="$PREFIX
+
 ./configure \
 --target-os=linux \
 --prefix=$PREFIX \
@@ -26,6 +31,7 @@ echo "start build ffmpeg"
 --disable-ffplay \
 --disable-ffprobe \
 --disable-avdevice \
+--disable-postproc \
 --disable-doc \
 --disable-symver \
 --enable-encoders \
@@ -52,14 +58,20 @@ echo "start build ffmpeg"
 --enable-parser=ac3 \
 --cc=$TOOLCHAIN/bin/$TOOLNAME_BASE-gcc \
 --cross-prefix=$TOOLCHAIN/bin/$TOOLNAME_BASE- \
+--disable-runtime-cpudetect \
+-disable-stripping \
+--disable-asm \
 --arch=$AOSP_ABI \
 --sysroot=$PLATFORM \
 --nm=$TOOLCHAIN/bin/$TOOLNAME_BASE-nm \
---extra-ldflags="-I$ASM -isysroot $ISYSROOT -D__ANDROID_API__=$API $ADDI_LDFLAGS" \
+--extra-cflags="-I$ASM -isysroot $ISYSROOT -D__ANDROID_API__=$API -U_FILE_OFFSET_BITS $FF_EXTRA_CFLAGS  $FF_CFLAGS" \
+--extra-ldflags="$ADDI_LDFLAGS" \
 $ADDITIONAL_CONFIGURE_FLAG
+
+echo "-I$ASM -isysroot $ISYSROOT -D__ANDROID_API__=$API -U_FILE_OFFSET_BITS $FF_EXTRA_CFLAGS  $FF_CFLAGS"
 
 make clean
 
 make -j16
 make install
- echo "end build ffmpeg"
+echo "end build ffmpeg"
