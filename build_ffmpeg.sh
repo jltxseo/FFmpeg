@@ -64,8 +64,8 @@ echo "PREFIX="$PREFIX
 --arch=$AOSP_ABI \
 --sysroot=$PLATFORM \
 --nm=$TOOLCHAIN/bin/$TOOLNAME_BASE-nm \
---extra-cflags="-I$ASM -isysroot $ISYSROOT -D__ANDROID_API__=$API -U_FILE_OFFSET_BITS $FF_EXTRA_CFLAGS  $FF_CFLAGS" \
---extra-ldflags="$ADDI_LDFLAGS" \
+--extra-cflags="-I$ASM -isysroot $ISYSROOT -D__ANDROID_API__=$API -U_FILE_OFFSET_BITS -fPIC -DANDROID -Wfatal-errors -Wno-deprecated $FF_EXTRA_CFLAGS  $FF_CFLAGS" \
+--extra-ldflags="-L${PLATFORM}/usr/lib" \
 $ADDITIONAL_CONFIGURE_FLAG
 
 echo "-I$ASM -isysroot $ISYSROOT -D__ANDROID_API__=$API -U_FILE_OFFSET_BITS $FF_EXTRA_CFLAGS  $FF_CFLAGS"
