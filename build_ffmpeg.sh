@@ -19,11 +19,12 @@ echo "ISYSROOT="$ISYSROOT
 echo "ASM="$ASM
 echo "PREFIX="$PREFIX
 
+rm ./config.h
+
 ./configure \
 --target-os=linux \
 --prefix=$PREFIX \
 --enable-cross-compile \
---enable-gpl \
 --enable-shared \
 --disable-static \
 --disable-doc \
@@ -34,34 +35,11 @@ echo "PREFIX="$PREFIX
 --disable-postproc \
 --disable-doc \
 --disable-symver \
---enable-encoders \
---enable-nonfree \
---enable-muxers \
---enable-muxer=mov \
---enable-muxer=mp4 \
---enable-muxer=avi \
---disable-demuxers \
---enable-demuxer=image2 \
---enable-demuxer=aac \
---enable-demuxer=avi \
---enable-demuxer=mpc \
---enable-demuxer=mpegts \
---enable-demuxer=mov \
---enable-decoders \
---enable-decoder=aac \
---enable-decoder=aac_latm \
---enable-decoder=mpeg4 \
---enable-decoder=mjpeg \
---enable-decoder=png \
---disable-parsers \
---enable-parser=aac \
---enable-parser=ac3 \
 --cc=$TOOLCHAIN/bin/$TOOLNAME_BASE-gcc \
 --cross-prefix=$TOOLCHAIN/bin/$TOOLNAME_BASE- \
 --disable-runtime-cpudetect \
--disable-stripping \
---disable-asm \
 --arch=$AOSP_ABI \
+--disable-asm \
 --sysroot=$PLATFORM \
 --nm=$TOOLCHAIN/bin/$TOOLNAME_BASE-nm \
 --extra-cflags="-I$ASM -isysroot $ISYSROOT -D__ANDROID_API__=$API -U_FILE_OFFSET_BITS -fPIC -DANDROID -Wfatal-errors -Wno-deprecated $FF_EXTRA_CFLAGS  $FF_CFLAGS" \
