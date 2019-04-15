@@ -10,7 +10,7 @@ TOOLCHAIN=$ANDROID_NDK_ROOT/toolchains/$TOOLCHAIN_BASE-$AOSP_TOOLCHAIN_SUFFIX/pr
 ISYSROOT=$ANDROID_NDK_ROOT/sysroot
 ASM=$ISYSROOT/usr/include/$TOOLCHAIN_BASE
 
-PREFIX=$(pwd)/android/multiple/libs/$AOSP_ABI
+PREFIX=$(pwd)/android/single/libs/$AOSP_ABI
 
 echo "start build ffmpeg"
 echo "PLATFORM="$PLATFORM
@@ -25,8 +25,8 @@ rm ./config.h
 --target-os=linux \
 --prefix=$PREFIX \
 --enable-cross-compile \
---enable-shared \
---disable-static \
+--disable-shared \
+--enable-static \
 --disable-doc \
 --disable-ffmpeg \
 --disable-ffplay \
@@ -52,4 +52,22 @@ make clean
 
 make -j16
 make install
+#合并
+$TOOLCHAIN/bin/$TOOLNAME_BASE-ld \
+    -rpath-link=$PLATFORM/usr/lib \
+    -L$PLATFORM/usr/lib \
+    -L$PREFIX/lib \
+    -soname libffmpeg.so -shared -nostdlib -Bsymbolic --whole-archive --no-undefined -o \
+    $PREFIX/libffmpeg.so \
+    libavcodec/libavcodec.a \
+    libavfilter/libavfilter.a \
+    libswresample/libswresample.a \
+    libavformat/libavformat.a \
+    libavutil/libavutil.a \
+    libswscale/libswscale.a \
+    -lc -lm -lz -ldl -llog --dynamic-linker=/system/bin/linker $TOOLCHAIN/lib/gcc/$TOOLNAME_BASE/4.9.x/libgcc.a
+
+        # strip 精简文件
+    $TOOLCHAIN/bin/$TOOLCHAIN_BASE-strip  $PREFIX/libffmpeg.so
+
 echo "end build ffmpeg"
